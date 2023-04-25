@@ -1,20 +1,15 @@
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.commons.logging.Log;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
@@ -33,15 +28,11 @@ public class Main {
         WebDriverManager.chromedriver().setup();
         // Create an instance of ChromeOptions and add the desired option
         ChromeOptions options = new ChromeOptions();
-        /* This option opens the Chrome window with specified user profile.
-        It is useful for when you wish to already be logged in.
-        Replace the dir path with the path to your own user.
-        options.addArguments("--user-data-dir=C:\\Users\\adamj\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 2");
-        */
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--disable-notifications");
         // Create an instance of ChromeDriver with the options
         ChromeDriver driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
 
         // Use the driver to navigate to a webpage and perform actions
         driver.get("https://www.facebook.com");
@@ -70,8 +61,23 @@ public class Main {
             // Click log in button
             WebElement loginButton = driver.findElement(By.name("login"));
             loginButton.click();
+
+            Thread.sleep(5000);
+
+            // Verify and logg successful login by navigating to user wall
+            try {
+                driver.get("https://www.facebook.com/profile");
+                Thread.sleep(3000);
+                WebElement onYourMind = driver.findElement(By.xpath("//*[contains(text(), 'on your')]"));
+                Logback.loginSuccess();
+            } catch (Exception allExcecptions) {
+                Logback.loginFailure();
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
+            Logback.iO();
+        } catch (NullPointerException e) {
+            Logback.nullPointer();
         }
     }
 }
