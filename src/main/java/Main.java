@@ -1,7 +1,6 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.apache.commons.logging.Log;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -9,21 +8,10 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
 
-        /* Här slutade vi sist (fredag 21/4)
-        // logger-kod från chat GPT
-        private static final Logger logger = LoggerFactory.getLogger(Main.class);
-
-        public void test() {
-            logger.info("Starting test...");
-            // Perform test steps here
-            logger.info("Test complete.");
-        }
-        */
 
         WebDriverManager.chromedriver().setup();
         // Create an instance of ChromeOptions and add the desired option
@@ -68,7 +56,8 @@ public class Main {
             try {
                 driver.get("https://www.facebook.com/profile");
                 Thread.sleep(3000);
-                WebElement onYourMind = driver.findElement(By.xpath("//*[contains(text(), 'on your')]"));
+                // Look for element "What's on your mind", If found it means login was successful
+                driver.findElement(By.xpath("//*[contains(text(), 'on your mind')]"));
                 Logback.loginSuccess();
             } catch (Exception allExcecptions) {
                 Logback.loginFailure();
